@@ -1,0 +1,35 @@
+%YAML 1.1
+---
+gfVersion: v1.0
+class: app
+
+name: nanopolish-index-0.11.1-gf
+description: nanopolish index
+repo_uri: None
+version: '0.1'
+inputs:
+  reads:
+    label: Input Reads File
+    description: Input Reads file
+    type: File
+  summary:
+    label: Input Sequencing Summary File
+    description: Input Sequencing Summary file
+    type: File
+  fast5:
+    label: Input Fast5 Directory
+    description: Input Fast5 Directory
+    type: Directory
+parameters:
+  output:
+    label: Output Directory
+    description: Output directory for nanopolish index
+    type: Directory
+definition:
+{% if agave %}
+  agave:
+    agave_app_id: {{ agave.appsPrefix }}-nanopolish-index-0.11.1-gf-0.1{{ revision }}
+{% endif %}
+  local:
+    script: nanopolish-index-0.11.1-gf.sh
+...
