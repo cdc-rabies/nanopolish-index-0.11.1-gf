@@ -1,0 +1,51 @@
+{
+  "name": "{{ agave.appsPrefix }}-nanopolish-index-0.11.1-gf",
+  "version": "0.1",
+  "label": "nanopolish index",
+  "defaultNodeCount": 1,
+  "defaultMemoryPerNode": 1,
+  "defaultProcessorsPerNode": 1,
+  "executionType": "HPC",
+  "parallelism": "SERIAL",
+  "checkpointable": false,
+  "executionSystem": "{{ agave.executionSystem }}",
+  "deploymentPath": "{{ agave.appsDir }}/nanopolish-index-0.11.1-gf-0.1",
+  "deploymentSystem": "{{ agave.deploymentSystem }}",
+  "templatePath": "nanopolish-index-0.11.1-gf.sh",
+  "testPath": "test/test.sh",
+  "inputs": [
+    { "id": "reads",
+      "value": {
+        "required": true,
+        "default": ""
+      }
+    },
+    { "id": "summary",
+      "value": {
+        "required": true,
+        "default": ""
+      }
+    },
+    { "id": "fast5",
+      "value": {
+        "required": true,
+        "default": ""
+      }
+    }
+  ],
+  "parameters": [
+    { "id": "output",
+      "value": {
+        "required": true,
+        "type": "string"
+      }
+    },
+    { "id": "exec_method",
+      "value": {
+        "required": true,
+        "default": "auto",
+        "type": "string"
+      }
+    }
+  ]
+}
