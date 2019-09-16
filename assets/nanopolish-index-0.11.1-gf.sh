@@ -15,6 +15,7 @@ usage () {
     echo "  --summary => Input Sequencing Summary File"
     echo "  --fast5 => Input Fast5 Directory"
     echo "  --output => Output Directory"
+    echo "  --log => Log Directory"
     echo "  --exec_method => Execution method (singularity, auto)"
     echo "  --help => Display this help message"
 }
@@ -90,7 +91,7 @@ fi
 ## MODIFY >>> *****************************************************************
 ## Command line options should match usage description
 OPTIONS=
-LONGOPTIONS=help,exec_method:,reads:,summary:,fast5:,output:,
+LONGOPTIONS=help,exec_method:,reads:,summary:,fast5:,output:,log:,
 ## ***************************************************************** <<< MODIFY
 
 # -temporarily store output to be able to check for errors
@@ -158,6 +159,14 @@ while true; do
             fi
             shift 2
             ;;
+        --log)
+            if [ -z "${log}" ]; then
+                LOG=$2
+            else
+                LOG=${log}
+            fi
+            shift 2
+            ;;
         --exec_method)
             if [ -z "${exec_method}" ]; then
                 EXEC_METHOD=$2
@@ -185,6 +194,7 @@ echo "Reads: ${READS}"
 echo "Summary: ${SUMMARY}"
 echo "Fast5: ${FAST5}"
 echo "Output: ${OUTPUT}"
+echo "Log: ${LOG}"
 echo "Execution Method: ${EXEC_METHOD}"
 ## ***************************************************************** <<< MODIFY
 
@@ -293,6 +303,21 @@ else
 fi
 
 
+# LOG parameter
+if [ -n "${LOG}" ]; then
+    :
+    LOG_FULL=$(readlink -f "${LOG}")
+    LOG_DIR=$(dirname "${LOG_FULL}")
+    LOG_BASE=$(basename "${LOG_FULL}")
+else
+    :
+    echo "Log Directory required"
+    echo
+    usage
+    exit 1
+fi
+
+
 ## ***************************************************************** <<< MODIFY
 
 ## EXEC_METHOD: execution method
@@ -381,7 +406,7 @@ MNT=""; ARG=""; CMD0="mkdir -p ${LOG_FULL} ${ARG}"; CMD="${CMD0}"; echo "CMD=${C
 ## There should be one case statement for each item in $exec_methods
 case "${AUTO_EXEC}" in
     singularity)
-        MNT=""; ARG=""; ARG="${ARG} -p"; MNT="${MNT} -B "; MNT="${MNT}\"${OUTPUT_DIR}:/data1\""; ARG="${ARG} \"/data1/${OUTPUT_BASE}/${OUTPUT_BASE}\""; ARG="${ARG} -d"; MNT="${MNT} -B "; MNT="${MNT}\"${FAST5_DIR}:/data2\""; ARG="${ARG} \"/data2/${FAST5_BASE}\""; ARG="${ARG} -s"; ARG="${ARG} \"${SUMMARY}\""; CMD0="singularity -s exec ${MNT} docker://quay.io/biocontainers/nanopolish:0.11.1--h99ef0c4_0 nanopolish index ${ARG}"; CMD0="${CMD0} >\"${LOG_FULL}/${OUTPUT_BASE}-nanopolish-index.stdout\""; CMD0="${CMD0} 2>\"${LOG_FULL}/${OUTPUT_BASE}-nanopolish-index.stderr\""; CMD="${CMD0}"; echo "CMD=${CMD}"; safeRunCommand "${CMD}"; 
+        MNT=""; ARG=""; ARG="${ARG} -d"; ARG="${ARG} \"${FAST5}\""; ARG="${ARG} -s"; ARG="${ARG} \"${SUMMARY}\""; ARG="${ARG} \"${READS}\""; CMD0="singularity -s exec ${MNT} docker://quay.io/biocontainers/nanopolish:0.11.1--h99ef0c4_0 nanopolish index ${ARG}"; CMD0="${CMD0} >\"${LOG_FULL}/${OUTPUT_BASE}.stdout\""; CMD0="${CMD0} 2>\"${LOG_FULL}/${OUTPUT_BASE}.stderr\""; CMD="${CMD0}"; echo "CMD=${CMD}"; safeRunCommand "${CMD}"; 
         ;;
 esac
 ## ***************************************************************** <<< MODIFY

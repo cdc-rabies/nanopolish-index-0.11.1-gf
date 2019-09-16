@@ -5,7 +5,7 @@ class: app
 
 name: nanopolish-index-0.11.1-gf
 description: nanopolish index
-repo_uri: None
+repo_uri: https://github.com/cdc-rabies/nanopolish-index-0.11.1-gf
 version: '0.1'
 inputs:
   reads:
@@ -24,6 +24,10 @@ parameters:
   output:
     label: Output Directory
     description: Output directory for nanopolish index
+    type: Directory
+  log:
+    label: Log Directory
+    description: Log directory for nanopolish index
     type: Directory
 definition:
 {% if agave %}

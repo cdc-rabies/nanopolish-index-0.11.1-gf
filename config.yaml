@@ -94,7 +94,7 @@ inputs:
     description: Input Fast5 Directory
     type: Directory
     required: true
-    test_value: ${SCRIPT_DIR}/data/fast5
+    test_value: ${SCRIPT_DIR}/data/fast5/
 
 parameters:
   output: 
@@ -102,7 +102,13 @@ parameters:
     description: Output directory for nanopolish index 
     type: Directory 
     required: true
-    test_value: nanopolish_index 
+    test_value: ${SCRIPT_DIR}/nanopolish_index 
+  log:
+    label: Log Directory
+    description: Log directory for nanopolish index
+    type: Directory
+    required: true
+    test_value: ${SCRIPT_DIR}/log
 
 
 
@@ -143,15 +149,14 @@ exec_methods:
     image: 'docker://quay.io/biocontainers/nanopolish:0.11.1--h99ef0c4_0'    
     run: nanopolish index    
     args:    
-    - flag: -p     
-      mount: ${OUTPUT}
-      value: ${OUTPUT_BASE}/${OUTPUT_BASE}  
     - flag: -d
-      mount: ${FAST5}
+      value: ${FAST5}
     - flag: -s
       value: ${SUMMARY} 
-    stdout: ${LOG_FULL}/${OUTPUT_BASE}-nanopolish-index.stdout    
-    stderr: ${LOG_FULL}/${OUTPUT_BASE}-nanopolish-index.stderr
+    - flag:
+      value: ${READS}
+    stdout: ${LOG_FULL}/${OUTPUT_BASE}.stdout    
+    stderr: ${LOG_FULL}/${OUTPUT_BASE}.stderr
   
 
 
